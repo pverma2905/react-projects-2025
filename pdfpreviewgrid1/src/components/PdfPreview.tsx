@@ -1,26 +1,33 @@
+// PdfPreview.tsx
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, PDFViewer } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Font
+} from "@react-pdf/renderer";
 
-// Styles without font/image
+interface TableConfig {
+  title: string;
+  key: string;
+  columns: string[];
+}
+
+interface MyPdfDocumentProps {
+  data: TableConfig[];
+  dataset: Record<string, any[]>;
+}
+
 const styles = StyleSheet.create({
   page: {
     padding: 20,
-    fontSize: 10,
-    flexDirection: "column",
+    fontSize: 10
   },
   header: {
-    fontSize: 14,
-    marginBottom: 10,
-    borderBottom: "1px solid black",
-    paddingBottom: 4,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 10,
-    left: 0,
-    right: 0,
-    textAlign: "center",
-    fontSize: 9,
+    fontSize: 16,
+    marginBottom: 10
   },
   table: {
     display: "table" as any,
@@ -29,66 +36,82 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
-    marginBottom: 20,
+    marginBottom: 20
   },
-  tableRow: {
-    flexDirection: "row",
+  row: {
+    flexDirection: "row"
   },
-  tableCell: {
+  cell: {
     borderStyle: "solid",
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 4,
-    flexGrow: 1,
+    flex: 1
   },
+  footer: {
+    position: "absolute",
+    fontSize: 10,
+    bottom: 10,
+    left: 0,
+    right: 0,
+    textAlign: "center"
+  }
 });
 
-interface PdfPreviewProps {
-  grids: { title: string; columns: string[]; data: Record<string, any>[] }[];
-}
+export const MyPdfDocument: React.FC<MyPdfDocumentProps> = ({
+  data,
+  dataset
+}) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      {/* Header */}
+      <Text style={styles.header}>Report Preview</Text>
 
-const PdfPreview: React.FC<PdfPreviewProps> = ({ grids }) => {
-  return (
-    <PDFViewer width="100%" height="100%">
-      <Document>
-        {grids.map((grid, index) => (
-          <Page key={index} size="A4" style={styles.page}>
-            {/* Header */}
-            <Text style={styles.header}>{grid.title}</Text>
-
-            {/* Grid Table */}
+      {data.map((table, index) => {
+        const tableData = dataset[table.key] || [];
+        return (
+          <View key={index}>
+            <Text style={{ fontSize: 14, marginBottom: 5 }}>{table.title}</Text>
             <View style={styles.table}>
               {/* Header Row */}
-              <View style={styles.tableRow}>
-                {grid.columns.map((col, i) => (
-                  <Text key={i} style={styles.tableCell}>
+              <View style={styles.row}>
+                {table.columns.map((col, i) => (
+                  <Text key={i} style={styles.cell}>
                     {col}
                   </Text>
                 ))}
               </View>
               {/* Data Rows */}
-              {grid.data.map((row, rIndex) => (
-                <View key={rIndex} style={styles.tableRow}>
-                  {grid.columns.map((col, cIndex) => (
-                    <Text key={cIndex} style={styles.tableCell}>
-                      {row[col]}
-                    </Text>
-                  ))}
+              {tableData.length > 0 ? (
+                tableData.map((row, ri) => (
+                  <View key={ri} style={styles.row}>
+                    {table.columns.map((col, ci) => (
+                      <Text key={ci} style={styles.cell}>
+                        {row[Object.keys(row)[ci]] ?? ""}
+                      </Text>
+                    ))}
+                  </View>
+                ))
+              ) : (
+                <View style={styles.row}>
+                  <Text style={[styles.cell, { flexGrow: table.columns.length }]}>
+                    No records to display
+                  </Text>
                 </View>
-              ))}
+              )}
             </View>
+          </View>
+        );
+      })}
 
-            {/* Footer */}
-            <Text
-              style={styles.footer}
-              render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-            />
-          </Page>
-        ))}
-      </Document>
-    </PDFViewer>
-  );
-};
-
-export default PdfPreview;
+      {/* Footer with page number */}
+      <Text
+        style={styles.footer}
+        render={({ pageNumber, totalPages }) =>
+          `Page ${pageNumber} of ${totalPages}`
+        }
+      />
+    </Page>
+  </Document>
+);
