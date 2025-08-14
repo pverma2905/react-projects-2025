@@ -1,0 +1,10 @@
+{
+  "listings": [
+    { "id": 1, "name": "Item 1", "category": "A", "date": "2025-08-10", "checked": true, "description": "Desc 1" },
+    { "id": 2, "name": "Item 2", "category": "B", "date": "2025-08-11", "checked": false, "description": "Desc 2" }
+  ],
+  "dropdowns": [
+    { "id": 1, "label": "Category A", "value": "A" },
+    { "id": 2, "label": "Category B", "value": "B" }
+  ]
+}
