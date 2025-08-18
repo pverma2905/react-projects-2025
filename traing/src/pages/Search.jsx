@@ -1,10 +1,11 @@
 import { useState } from "react";
-import books from "../../data.js"; // Adjust the path as necessary
 import { useNavigate } from "react-router-dom";
+import { useBooks } from "../context/BookContext";
 
 const Search = () => {
- const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const { books } = useBooks();
 
   const filteredBooks = books.filter(
     (book) =>
@@ -12,10 +13,10 @@ const Search = () => {
       book.author.toLowerCase().includes(query.toLowerCase())
   );
 
-   return (
-    <div className="">
+  return (
+    <div className="container">
       <h1 className="text-center">Search Page</h1>
-      
+
       <input
         type="text"
         value={query}
@@ -25,24 +26,28 @@ const Search = () => {
       />
 
       {filteredBooks.length > 0 ? (
-        <div  style={{ display: "flex", flexDirection: "row", width: "100%", width: "100%",  gap: "8px", flexWrap: "wrap" }}>
+        <div className="d-flex flex-wrap justify-content-between gap-4 m-5">
           {filteredBooks.map((book) => (
             <div
               key={book.id}
-              style={{ backgroundColor:"black", color: "white" , padding:"4px 8px", margin:"8px 0", borderRadius:"4px" }} className="row" data-testid="book-item"
+              className="col-4 bg-black text-white text-center p-4 mt-4 rounded"
+              data-testid="book-item"
             >
-              <p data-testid={`name-${book.name}`}><strong>Name:</strong> {book.name}</p>
-              <p><strong>Author:</strong> {book.author}</p>
-              <p><strong>Price:</strong> ${book.price}</p>
+              <h4 data-testid={`name-${book.name}`}>{book.name}</h4>
+              <p>
+                <strong>Author Name:</strong> {book.author}
+              </p>
+              <p>
+                <strong>Price:</strong> ${book.price}
+              </p>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center mt-8">
-          <p>No books found.</p>
+        <div className="mt-4 text-center">
           <button
             onClick={() => navigate("/request")}
-            className="mt-4 bg-white text-black px-4 py-2 rounded hover:bg-gray-300"
+            className="btn btn-primary"
           >
             Request Book
           </button>
@@ -50,7 +55,6 @@ const Search = () => {
       )}
     </div>
   );
+};
 
-}
-
-export default Search
+export default Search;

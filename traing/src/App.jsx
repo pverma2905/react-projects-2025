@@ -1,20 +1,20 @@
+// src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from 'react'
-import Search from './pages/Search'
-import Request from './pages/Request'
-import './App.css'
+import Search from "./pages/Search";
+import Request from "./pages/Request";
+import { BookProvider } from "./context/BookContext";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Search />} />
-        <Route path="/request" element={<Request />} />
-      </Routes>
-    </BrowserRouter>
-  )
+    <BookProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Search />} />
+          <Route path="/request" element={<Request />} />
+        </Routes>
+      </BrowserRouter>
+    </BookProvider>
+  );
 }
 
-export default App
+export default App;
