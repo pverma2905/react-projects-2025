@@ -1,7 +1,7 @@
 type FormData = {
   name: string;
   email: string;
-  accepted: boolean;
+  skills: string[];
 };
 
 type ChildOneProps = {

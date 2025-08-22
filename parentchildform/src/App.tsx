@@ -7,7 +7,7 @@ function App() {
  const [formData, setFormData] = useState({
     name: "",
     email: "",
-    accepted: false,
+     skills: [] as string[]
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
